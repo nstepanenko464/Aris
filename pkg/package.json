@@ -1,0 +1,18 @@
+{
+  "name": "aris-web-app",
+  "type": "module",
+  "collaborators": [
+    "Avi Weinstock <aweinstock314@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "aris_web_app_bg.wasm",
+    "aris_web_app.js",
+    "aris_web_app.d.ts"
+  ],
+  "main": "aris_web_app.js",
+  "types": "aris_web_app.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
