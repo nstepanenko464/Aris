@@ -201,7 +201,7 @@ impl<T> Pools<T> {
     fn remove_premise(&mut self, idx: &PremKey) {
         self.prem_map.remove(idx);
         for (_, v) in self.sub_map.iter_mut() {
-            let premise_list = std::mem::replace(&mut v.premise_list, ZipperVec::new());
+            let premise_list = std::mem::take(&mut v.premise_list);
             v.premise_list = ZipperVec::from_vec(premise_list.iter().filter(|x| x != &idx).cloned().collect());
         }
         self.remove_line_helper(&Coproduct::inject(*idx));
@@ -209,7 +209,7 @@ impl<T> Pools<T> {
     fn remove_step(&mut self, idx: &JustKey) {
         self.just_map.remove(idx);
         for (_, v) in self.sub_map.iter_mut() {
-            let line_list = std::mem::replace(&mut v.line_list, ZipperVec::new());
+            let line_list = std::mem::take(&mut v.line_list);
             v.line_list = ZipperVec::from_vec(line_list.iter().filter(|x| x.get() != Some(idx)).cloned().collect());
         }
         self.remove_line_helper(&Coproduct::inject(*idx));
@@ -233,7 +233,7 @@ impl<T> Pools<T> {
             }
         }
         for (_, v) in self.sub_map.iter_mut() {
-            let line_list = std::mem::replace(&mut v.line_list, ZipperVec::new());
+            let line_list = std::mem::take(&mut v.line_list);
             v.line_list = ZipperVec::from_vec(line_list.iter().filter(|x| x.get() != Some(idx)).cloned().collect());
         }
         self.remove_line_helper(&Coproduct::inject(*idx));
@@ -498,14 +498,14 @@ impl<Tail: Default + Clone> Proof for PooledProof<HCons<Expr, Tail>> {
         self.proof.add_step(just)
     }
     fn remove_line(&mut self, r: &PjRef<Self>) {
-        let premise_list = std::mem::replace(&mut self.proof.premise_list, ZipperVec::new());
+        let premise_list = std::mem::take(&mut self.proof.premise_list);
         self.proof.premise_list = ZipperVec::from_vec(premise_list.iter().filter(|x| Some(x) != r.get().as_ref()).cloned().collect());
-        let line_list = std::mem::replace(&mut self.proof.line_list, ZipperVec::new());
+        let line_list = std::mem::take(&mut self.proof.line_list);
         self.proof.line_list = ZipperVec::from_vec(line_list.iter().filter(|x| (x.get::<JustKey, _>() != r.get()) || x.get::<SubKey, _>().is_some()).cloned().collect());
         self.proof.remove_line(r);
     }
     fn remove_subproof(&mut self, r: &Self::SubproofReference) {
-        let line_list = std::mem::replace(&mut self.proof.line_list, ZipperVec::new());
+        let line_list = std::mem::take(&mut self.proof.line_list);
         self.proof.line_list = ZipperVec::from_vec(line_list.iter().filter(|x| x.get() != Some(r)).cloned().collect());
         self.proof.remove_subproof(r);
     }

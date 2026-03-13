@@ -753,7 +753,7 @@ impl RuleT for PropositionalInference {
                         return Err(DoesNotOccur(*operand.clone(), prem[0].clone()));
                     }
                     let conc = sproof.lines().into_iter().filter_map(|x| x.get::<P::JustificationReference, _>().cloned()).map(|r| p.lookup_expr_or_die(&Coproduct::inject(r))).collect::<Result<Vec<Expr>, _>>()?;
-                    if !conc.iter().any(|x| *x == Expr::Contra) {
+                    if !conc.contains(&Expr::Contra) {
                         return Err(DepDoesNotExist(Expr::Contra, false));
                     }
                     Ok(())
