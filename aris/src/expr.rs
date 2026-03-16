@@ -1092,6 +1092,36 @@ impl Expr {
         }
     }
 
+    /// Normalize associative operators to binary form (nested 2-arity) so that
+    /// rewrite rules written for binary patterns can still match.
+    pub fn normalize_assoc_to_binary(self) -> Expr {
+        match self {
+            Expr::Assoc { op, mut exprs } if exprs.len() > 2 => {
+                // Convert [a, b, c, ...] into ((a op b) op c) op ...
+                let first = exprs.remove(0);
+                let rest = Expr::Assoc { op, exprs };
+                Expr::Assoc { op, exprs: vec![first.normalize_assoc_to_binary(), rest.normalize_assoc_to_binary()] }
+            }
+            Expr::Assoc { op, exprs } => Expr::Assoc { op, exprs: exprs.into_iter().map(|e| e.normalize_assoc_to_binary()).collect() },
+            Expr::Quant { kind, name, body } => {
+                let normalized_body = body.normalize_assoc_to_binary();
+                Expr::Quant { kind, name, body: Box::new(normalized_body) }
+            }
+            Expr::Not { operand } => Expr::Not { operand: Box::new(operand.normalize_assoc_to_binary()) },
+            Expr::Impl { left, right } => {
+                let left = Box::new(left.normalize_assoc_to_binary());
+                let right = Box::new(right.normalize_assoc_to_binary());
+                Expr::Impl { left, right }
+            }
+            Expr::Apply { func, args } => {
+                let func = Box::new(func.normalize_assoc_to_binary());
+                let args = args.into_iter().map(|a| a.normalize_assoc_to_binary()).collect();
+                Expr::Apply { func, args }
+            }
+            other => other,
+        }
+    }
+
     /// Extract expressions from associative structures while preserving their operator type.
     fn extract_associative(self, op: Op) -> Vec<Expr> {
         match self {
@@ -1219,7 +1249,8 @@ impl Expr {
                 let mut complements_found = false;
 
                 for expr in exprs {
-                    if Expr::collect_unique_exprs_complement(&expr, op, &mut unique_exprs) {
+                    let normalized_expr = expr.normalize_complement();
+                    if Expr::collect_unique_exprs_complement(&normalized_expr, op, &mut unique_exprs) {
                         complements_found = true;
                     }
                 }
@@ -2055,6 +2086,45 @@ mod tests {
         f("a & (b & (c | (p -> (q <-> (r <-> s)))) & ((t === u) === (v === ((w | x) | y))))");
         f("a & ((b & c) | (q | r))");
         f("(a & (b & c)) | (q | r)");
+    }
+
+    #[test]
+    fn test_normalize_assoc_to_binary() {
+        use crate::parser::parse_unwrap as p;
+
+        let expr = p("A | B | C");
+        let normalized = expr.normalize_assoc_to_binary();
+        let expected = Expr::assoc(Op::Or, &[Expr::var("A"), Expr::assoc(Op::Or, &[Expr::var("B"), Expr::var("C")])]);
+        assert_eq!(normalized, expected);
+    }
+
+    #[test]
+    fn test_distributive() {
+        use crate::parser::parse_unwrap as p;
+
+        // Test that distribution works on expressions with >2 operands in OR
+        let expr = p("D & (A | B | C)");
+        let normalized = expr.normalize_assoc_to_binary();
+
+        // After binary normalization: D & (A | (B | C))
+        let expected_inner_or = Expr::assoc(Op::Or, &[Expr::var("A"), Expr::assoc(Op::Or, &[Expr::var("B"), Expr::var("C")])]);
+        let expected = Expr::assoc(Op::And, &[Expr::var("D"), expected_inner_or]);
+        assert_eq!(normalized, expected);
+
+        // Now test that distribution can be applied to the normalized form
+        // D & (A | (B | C)) should distribute to: (D & A) | (D & (B | C))
+        let distributed = normalized.transform(&|e| {
+            use crate::equivs::DISTRIBUTION;
+            let reduced = DISTRIBUTION.reduce(e.clone());
+            (reduced.clone(), reduced != e)
+        });
+
+        let expected_distributed = Expr::assoc(Op::Or, &[
+            Expr::assoc(Op::And, &[Expr::var("D"), Expr::var("A")]),
+            Expr::assoc(Op::And, &[Expr::var("D"),
+            Expr::assoc(Op::Or, &[Expr::var("B"), Expr::var("C")])])
+        ]);
+        assert_eq!(distributed, expected_distributed);
     }
 
     #[test]

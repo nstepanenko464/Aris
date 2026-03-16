@@ -143,6 +143,10 @@ fn reduce_pattern(e: Expr, patterns: &[(Expr, Expr)]) -> Expr {
 ///   * `expr` - expression to reduce
 ///   * `patterns` - patterns returned by `freevarsify_pattern()`
 fn reduce_transform_func(expr: Expr, patterns: &[(Expr, Expr, HashSet<String>)]) -> (Expr, bool) {
+    // Normalize associative operators to binary form before attempting to match.
+    // This allows patterns written for binary ops to match expressions with >2 operands.
+    let expr = expr.normalize_assoc_to_binary();
+
     // Try all our patterns at every level of the tree
     for (pattern, replace, pattern_vars) in patterns {
         // Unify3D

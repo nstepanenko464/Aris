@@ -33,6 +33,8 @@ define_rewrite_rule! {
     &[
         ("(P & Q) | (P & R)", "P & (Q | R)"),
         ("(P | Q) & (P | R)", "P | (Q & R)"),
+        ("P & (Q | R)", "(P & Q) | (P & R)"),
+        ("P | (Q & R)", "(P | Q) & (P | R)"),
     ]
 }
 define_rewrite_rule! {
