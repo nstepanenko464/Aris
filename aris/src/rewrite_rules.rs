@@ -122,7 +122,7 @@ fn permute_patterns(patterns: Vec<(Expr, Expr)>) -> Vec<(Expr, Expr)> {
 /// the substitutions from the unification.
 ///
 /// Limitations: Cannot do variadic versions of assoc binops, you need a constant number of args
-fn reduce_pattern(e: Expr, patterns: &[(Expr, Expr)]) -> Expr {
+pub fn reduce_pattern(e: Expr, patterns: &[(Expr, Expr)]) -> Expr {
     let patterns = freevarsify_pattern(&e, patterns);
     e.transform(&|expr| reduce_transform_func(expr, &patterns))
 }
