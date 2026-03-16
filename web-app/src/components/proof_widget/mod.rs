@@ -310,13 +310,7 @@ impl ProofWidget {
         _ => false,
     };
 
-    match parse(raw_line).map(|_| {
-        if skip_verify {
-            Ok(())
-        } else {
-            self.prf.verify_line(&proofref)
-        }
-    }) {
+    match parse(raw_line).map(|_| self.prf.verify_line(&proofref)) {
         None => {
             html! { <span class="alert alert-warning small-alert s1">{ "Parse error" }</span> }
         }
