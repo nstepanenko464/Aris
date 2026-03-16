@@ -292,47 +292,37 @@ impl ProofWidget {
     /// Renders feedback for a specific proof line, such as correctness or errors.
     /// Feedback includes messages for parse errors, valid premises, and rule violations.
     fn render_line_feedback(&self, proofref: PjRef<P>, is_subproof: bool) -> Html {
-    use aris::parser::parse;
-    let raw_line = match self.pud.ref_to_input.get(&proofref).and_then(|x| if !x.is_empty() { Some(x) } else { None }) {
-        None => {
-            return html! { <span></span> };
-        }
-        Some(x) => x,
-    };
-
-    let skip_verify = match proofref {
-        Coproduct::Inr(Coproduct::Inl(jref)) => match self.prf.lookup_justification_or_die(&jref) {
-            Ok(aris::proofs::Justification(_, rule, _, _)) => {
-                rule.get_name() == "Distribution"
+        use aris::parser::parse;
+        let raw_line = match self.pud.ref_to_input.get(&proofref).and_then(|x| if !x.is_empty() { Some(x) } else { None }) {
+            None => {
+                return html! { <span></span> };
             }
-            Err(_) => false,
-        },
-        _ => false,
-    };
+            Some(x) => x,
+        };
 
-    match parse(raw_line).map(|_| self.prf.verify_line(&proofref)) {
-        None => {
-            html! { <span class="alert alert-warning small-alert s1">{ "Parse error" }</span> }
-        }
-        Some(Ok(())) => match proofref {
-            Coproduct::Inl(_) => html! {
-                <span class="alert alert-success small-alert s2">
-                    { if is_subproof { "Assumption" } else { "Premise" } }
-                </span>
+        match parse(raw_line).map(|_| self.prf.verify_line(&proofref)) {
+            None => {
+                html! { <span class="alert alert-warning small-alert s1">{ "Parse error" }</span> }
+            }
+            Some(Ok(())) => match proofref {
+                Coproduct::Inl(_) => html! {
+                    <span class="alert alert-success small-alert s2">
+                        { if is_subproof { "Assumption" } else { "Premise" } }
+                    </span>
+                },
+                _ => {
+                    html! { <span class="alert small-alert bg-success text-white s1">{ "Correct" }</span> }
+                }
             },
-            _ => {
-                html! { <span class="alert small-alert bg-success text-white s1">{ "Correct" }</span> }
-            }
-        },
-        Some(Err(err)) => {
-            html! {
-                <button type="button" class="btn btn-danger s1" data-toggle="popover" data-content={ err.to_string() }>
-                    { "Error" }
-                </button>
+            Some(Err(err)) => {
+                html! {
+                    <button type="button" class="btn btn-danger s1" data-toggle="popover" data-content={ err.to_string() }>
+                        { "Error" }
+                    </button>
+                }
             }
         }
     }
-}
 
     /// Renders a single proof line with all associated UI elements, including indentation, feedback, and actions.
     fn render_proof_line(&self, ctx: &Context<Self>, line: usize, depth: usize, proofref: PjRef<P>, edge_decoration: &str) -> Html {

@@ -2119,11 +2119,7 @@ mod tests {
             (reduced.clone(), reduced != e)
         });
 
-        let expected_distributed = Expr::assoc(Op::Or, &[
-            Expr::assoc(Op::And, &[Expr::var("D"), Expr::var("A")]),
-            Expr::assoc(Op::And, &[Expr::var("D"),
-            Expr::assoc(Op::Or, &[Expr::var("B"), Expr::var("C")])])
-        ]);
+        let expected_distributed = Expr::assoc(Op::Or, &[Expr::assoc(Op::And, &[Expr::var("D"), Expr::var("A")]), Expr::assoc(Op::And, &[Expr::var("D"), Expr::assoc(Op::Or, &[Expr::var("B"), Expr::var("C")])])]);
         assert_eq!(distributed, expected_distributed);
     }
 

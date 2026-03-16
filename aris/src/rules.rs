@@ -1765,14 +1765,7 @@ fn check_by_rewrite_rule_confl<P: Proof>(p: &P, deps: Vec<PjRef<P>>, conclusion:
     check_by_normalize_first_expr(p, deps, conclusion, commutative, |e| rule.reduce(e), restriction)
 }
 
-fn check_by_rewrite_rule_one_step<P: Proof>(
-    p: &P,
-    deps: Vec<PjRef<P>>,
-    conclusion: Expr,
-    commutative: bool,
-    rule: &RewriteRule,
-    restriction: &str,
-) -> Result<(), ProofCheckError<PjRef<P>, P::SubproofReference>> {
+fn check_by_rewrite_rule_one_step<P: Proof>(p: &P, deps: Vec<PjRef<P>>, conclusion: Expr, commutative: bool, rule: &RewriteRule, restriction: &str) -> Result<(), ProofCheckError<PjRef<P>, P::SubproofReference>> {
     let mut premise = p.lookup_expr_or_die(&deps[0])?;
     let mut conclusion_mut = conclusion;
 
@@ -1785,10 +1778,7 @@ fn check_by_rewrite_rule_one_step<P: Proof>(
     }
 
     let premise_matches = rule.reductions.iter().any(|(find, replace)| {
-        let mut reduced = crate::rewrite_rules::reduce_pattern(
-            premise.clone(),
-            &[(find.clone(), replace.clone())],
-        );
+        let mut reduced = crate::rewrite_rules::reduce_pattern(premise.clone(), &[(find.clone(), replace.clone())]);
         if commutative {
             reduced = reduced.sort_commutative_ops(restriction);
         }
@@ -1796,10 +1786,7 @@ fn check_by_rewrite_rule_one_step<P: Proof>(
     });
 
     let conclusion_matches = rule.reductions.iter().any(|(find, replace)| {
-        let mut reduced = crate::rewrite_rules::reduce_pattern(
-            conclusion_mut.clone(),
-            &[(find.clone(), replace.clone())],
-        );
+        let mut reduced = crate::rewrite_rules::reduce_pattern(conclusion_mut.clone(), &[(find.clone(), replace.clone())]);
         if commutative {
             reduced = reduced.sort_commutative_ops(restriction);
         }
@@ -1809,9 +1796,7 @@ fn check_by_rewrite_rule_one_step<P: Proof>(
     if premise_matches || conclusion_matches {
         Ok(())
     } else {
-        Err(ProofCheckError::Other(
-            "Expressions do not match by a single rewrite step.".to_string(),
-        ))
+        Err(ProofCheckError::Other("Expressions do not match by a single rewrite step.".to_string()))
     }
 }
 
@@ -1855,14 +1840,7 @@ impl RuleT for BooleanEquivalence {
             // Distribution and Reduction have outputs containing binops that need commutative sorting
             // because we can't expect people to know the specific order of outputs that our definition
             // of the rules uses
-            Distribution => check_by_rewrite_rule_one_step(
-                p,
-                deps,
-                conclusion,
-                true,
-                &equivs::DISTRIBUTION,
-                "none",
-            ),
+            Distribution => check_by_rewrite_rule_one_step(p, deps, conclusion, true, &equivs::DISTRIBUTION, "none"),
             Complement => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_complement(), "none"),
             Identity => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::IDENTITY, "none"),
             Annihilation => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::ANNIHILATION, "none"),
