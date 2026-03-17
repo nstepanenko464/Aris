@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>HY1VGZqkpWTqupHENrc7mxV56z4aA1ciZWj8Xj6cyng=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>((A ∧ B) ∨ (A ∧ (C ∨ D)))</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>(A ∧ (B ∨ C ∨ D))</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>0</premise>
+    </step>
+  </proof>
+</bram>

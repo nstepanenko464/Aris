@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>8mjttEQa2XhmxKXD0haCciroPz6868Zyi4I9G7NaD/M=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>(A → (B ∧ C ∧ D))</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>((A → B) ∧ (A → (C ∧ D)))</raw>
+      <rule>CONDITIONAL_DISTRIBUTION</rule>
+      <premise>0</premise>
+    </step>
+  </proof>
+</bram>
