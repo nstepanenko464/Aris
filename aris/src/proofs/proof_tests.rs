@@ -101,9 +101,9 @@ macro_rules! enumerate_subproofful_tests {
 enumerate_subproofless_tests! { PooledProof<HList![Expr]>, test_subproofless_rules_on_pooledproof }
 enumerate_subproofful_tests! { PooledProof<HList![Expr]>, test_subproofful_rules_on_pooledproof }
 
-pub fn demo_proof_1<P: Proof>() -> P
+pub fn demo_proof_1<P>() -> P
 where
-    P: PartialEq + std::fmt::Debug,
+    P: Proof + PartialEq + std::fmt::Debug,
     PjRef<P>: PartialEq + std::fmt::Debug,
     P::SubproofReference: PartialEq + std::fmt::Debug,
 {

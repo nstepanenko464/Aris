@@ -299,6 +299,7 @@ impl ProofWidget {
             }
             Some(x) => x,
         };
+
         match parse(raw_line).map(|_| self.prf.verify_line(&proofref)) {
             None => {
                 html! { <span class="alert alert-warning small-alert s1">{ "Parse error" }</span> }

@@ -427,7 +427,7 @@ impl<Tail: Default + Clone> Proof for PooledSubproof<HCons<Expr, Tail>> {
                 let mut valid_deps = HashSet::new();
                 let mut valid_sdeps = HashSet::new();
                 self.possible_deps_for_line(r, &mut valid_deps, &mut valid_sdeps);
-                println!("possible_deps_for_line: {r:?} {valid_deps:?} {valid_sdeps:?}");
+                // println!("possible_deps_for_line: {r:?} {valid_deps:?} {valid_sdeps:?}");
 
                 for dep in deps.iter() {
                     let dep_co = Coproduct::inject(*dep);

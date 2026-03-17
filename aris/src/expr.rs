@@ -2113,17 +2113,23 @@ mod tests {
 
         // Now test that distribution can be applied to the normalized form
         // D & (A | (B | C)) should distribute to: (D & A) | (D & (B | C))
-        let distributed = normalized.transform(&|e| {
+        let distributed = {
             use crate::equivs::DISTRIBUTION;
-            let reduced = DISTRIBUTION.reduce(e.clone());
-            (reduced.clone(), reduced != e)
-        });
 
-        let expected_distributed = Expr::assoc(Op::Or, &[
-            Expr::assoc(Op::And, &[Expr::var("D"), Expr::var("A")]),
-            Expr::assoc(Op::And, &[Expr::var("D"),
-            Expr::assoc(Op::Or, &[Expr::var("B"), Expr::var("C")])])
-        ]);
+            DISTRIBUTION
+                .reductions
+                .iter()
+                .find_map(|(find, replace)| {
+                    let reduced = crate::rewrite_rules::reduce_pattern(normalized.clone(), &[(find.clone(), replace.clone())]);
+                    if reduced != normalized {
+                        Some(reduced)
+                    } else {
+                        None
+                    }
+                })
+                .expect("distribution should apply to normalized expression")
+        };
+        let expected_distributed = Expr::assoc(Op::Or, &[Expr::assoc(Op::And, &[Expr::var("D"), Expr::var("A")]), Expr::assoc(Op::Or, &[Expr::assoc(Op::And, &[Expr::var("D"), Expr::var("B")]), Expr::assoc(Op::And, &[Expr::var("D"), Expr::var("C")])])]);
         assert_eq!(distributed, expected_distributed);
     }
 

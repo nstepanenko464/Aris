@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>HKvyN8tGIkF9ExFZEPYS06kKLdVmqgfPSlEsSccZ99c=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>(P ∨ ((Q ∧ R) ∧ S))</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>((P ∨ S) ∧ (P ∨ (Q ∧ R)))</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>0</premise>
+    </step>
+    <step linenum="2">
+      <raw>((P ∨ S) ∧ (P ∨ Q) ∧ (P ∨ R))</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>1</premise>
+    </step>
+    <step linenum="3">
+      <raw>((P ∨ S) ∧ ((P ∨ Q) ∧ (P ∨ R)))</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>1</premise>
+    </step>
+  </proof>
+</bram>
