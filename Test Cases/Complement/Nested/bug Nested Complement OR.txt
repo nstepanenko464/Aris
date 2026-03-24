@@ -4,14 +4,14 @@
   <version>0.1.0</version>
   <metadata>
     <author>ARIS-YEW-UI</author>
-    <hash>dnQ2Mg2fCfoiyxAddUR1snGoOdSgTwwN2E16lYVDWo0=</hash>
+    <hash>4AHfv4DgjUcnx7oenHuaUBbbtWWpM+LmX0wGyYOyQ90=</hash>
   </metadata>
   <proof id="0">
     <assumption linenum="0">
-      <raw>(S ∧ ⊤)</raw>
+      <raw>(S ∧ (¬R ∨ R))</raw>
     </assumption>
     <step linenum="1">
-      <raw>(S ∧ (¬R ∨ R))</raw>
+      <raw>(S ∧ ⊤)</raw>
       <rule>COMPLEMENT</rule>
       <premise>0</premise>
     </step>

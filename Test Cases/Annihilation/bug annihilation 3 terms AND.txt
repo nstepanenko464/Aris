@@ -4,15 +4,15 @@
   <version>0.1.0</version>
   <metadata>
     <author>ARIS-YEW-UI</author>
-    <hash>dnQ2Mg2fCfoiyxAddUR1snGoOdSgTwwN2E16lYVDWo0=</hash>
+    <hash>WW/hG0ox927WqK4QZJ7LOosByyNmYkUK60O+9eAaZE8=</hash>
   </metadata>
   <proof id="0">
     <assumption linenum="0">
-      <raw>(S ∧ ⊤)</raw>
+      <raw>(P ∧ ⊥ ∧ Q)</raw>
     </assumption>
     <step linenum="1">
-      <raw>(S ∧ (¬R ∨ R))</raw>
-      <rule>COMPLEMENT</rule>
+      <raw>⊥</raw>
+      <rule>ANNIHILATION</rule>
       <premise>0</premise>
     </step>
   </proof>
