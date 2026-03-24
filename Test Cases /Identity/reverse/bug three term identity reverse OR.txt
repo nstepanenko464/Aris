@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>T1xyMx/MO7lLc2fsm6xXjacjNdxXc4x/Czh39EnpJAo=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>(P ∨ Q)</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>(P ∨ ⊤ ∨ Q)</raw>
+      <rule>IDENTITY</rule>
+      <premise>0</premise>
+    </step>
+  </proof>
+</bram>
