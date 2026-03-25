@@ -943,9 +943,10 @@ pub fn test_absorption<P: Proof>() -> (P, Vec<PjRef<P>>, Vec<PjRef<P>>) {
     let r15 = prf.add_step(Justification(p("A"), RuleM::Absorption, vec![i(r6)], vec![]));
     let r16 = prf.add_step(Justification(p("A"), RuleM::Absorption, vec![i(r7)], vec![]));
     let r17 = prf.add_step(Justification(p("A"), RuleM::Absorption, vec![i(r8)], vec![]));
-    let r18 = prf.add_step(Justification(p("A"), RuleM::Absorption, vec![i(r9)], vec![]));
+    let r18 = prf.add_step(Justification(p("(A | B) & A"), RuleM::Absorption, vec![i(r9)], vec![]));
+    let r19 = prf.add_step(Justification(p("A"), RuleM::Absorption, vec![i(r18.clone())], vec![]));
 
-    (prf, vec![i(r10), i(r11), i(r12), i(r13), i(r14), i(r15), i(r16), i(r17), i(r18)], vec![])
+    (prf, vec![i(r10), i(r11), i(r12), i(r13), i(r14), i(r15), i(r16), i(r17), i(r18), i(r19)], vec![])
 }
 
 pub fn test_reduction<P: Proof>() -> (P, Vec<PjRef<P>>, Vec<PjRef<P>>) {
