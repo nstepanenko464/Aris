@@ -38,6 +38,13 @@ define_rewrite_rule! {
     ]
 }
 define_rewrite_rule! {
+    ABSORPTION,
+    &[
+        ("phi & (phi | psi)", "phi"),
+        ("phi | (phi & psi)", "phi"),
+    ]
+}
+define_rewrite_rule! {
     IDENTITY,
     &[
         ("phi & ^|^", "phi"),

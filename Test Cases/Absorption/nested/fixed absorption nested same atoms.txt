@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>4QKSvFMs9tBdE2aEe1WZofkakFVNat5lkVy5bhlveB0=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>((A ∧ B) ∨ (A ∧ (A ∨ C)))</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>((A ∧ B) ∨ A)</raw>
+      <rule>ABSORPTION</rule>
+      <premise>0</premise>
+    </step>
+  </proof>
+</bram>
