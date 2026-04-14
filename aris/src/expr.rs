@@ -1122,6 +1122,36 @@ impl Expr {
         }
     }
 
+    /// Normalize associative operators to binary form using left-associative nesting.
+    /// This is useful for matching rewrite rules written for left-associative patterns.
+    pub fn normalize_assoc_to_binary_left(self) -> Expr {
+        match self {
+            Expr::Assoc { op, exprs } if exprs.len() > 2 => {
+                let exprs = exprs.into_iter().map(|e| e.normalize_assoc_to_binary_left()).collect::<Vec<_>>();
+                let mut iter = exprs.into_iter();
+                let first = iter.next().unwrap();
+                iter.fold(first, |acc, expr| Expr::Assoc { op, exprs: vec![acc, expr] })
+            }
+            Expr::Assoc { op, exprs } => Expr::Assoc { op, exprs: exprs.into_iter().map(|e| e.normalize_assoc_to_binary_left()).collect() },
+            Expr::Quant { kind, name, body } => {
+                let normalized_body = body.normalize_assoc_to_binary_left();
+                Expr::Quant { kind, name, body: Box::new(normalized_body) }
+            }
+            Expr::Not { operand } => Expr::Not { operand: Box::new(operand.normalize_assoc_to_binary_left()) },
+            Expr::Impl { left, right } => {
+                let left = Box::new(left.normalize_assoc_to_binary_left());
+                let right = Box::new(right.normalize_assoc_to_binary_left());
+                Expr::Impl { left, right }
+            }
+            Expr::Apply { func, args } => {
+                let func = Box::new(func.normalize_assoc_to_binary_left());
+                let args = args.into_iter().map(|a| a.normalize_assoc_to_binary_left()).collect();
+                Expr::Apply { func, args }
+            }
+            other => other,
+        }
+    }
+
     /// Extract expressions from associative structures while preserving their operator type.
     fn extract_associative(self, op: Op) -> Vec<Expr> {
         match self {

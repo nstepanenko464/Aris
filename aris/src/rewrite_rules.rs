@@ -145,31 +145,39 @@ pub fn reduce_pattern(e: Expr, patterns: &[(Expr, Expr)]) -> Expr {
 fn reduce_transform_func(expr: Expr, patterns: &[(Expr, Expr, HashSet<String>)]) -> (Expr, bool) {
     // Normalize associative operators to binary form before attempting to match.
     // This allows patterns written for binary ops to match expressions with >2 operands.
-    let expr = expr.normalize_assoc_to_binary();
+    let normalized_expr = expr.clone().normalize_assoc_to_binary();
+    let normalized_expr_left = normalized_expr.clone().normalize_assoc_to_binary_left();
+    let exprs_to_try = if normalized_expr_left == normalized_expr {
+        vec![normalized_expr.clone()]
+    } else {
+        vec![normalized_expr.clone(), normalized_expr_left]
+    };
 
     // Try all our patterns at every level of the tree
     for (pattern, replace, pattern_vars) in patterns {
-        // Unify3D
-        let ret = crate::expr::unify(vec![Constraint::Equal(pattern.clone(), expr.clone())].into_iter().collect());
-        if let Some(ret) = ret {
-            // Collect all unification results and make sure we actually match exactly
-            let mut subs = HashMap::new();
-            let mut any_bad = false;
-            for subst in ret.0 {
-                // We only want to unify our pattern variables. This prevents us from going backwards
-                // and unifying a pattern variable in expr with some expression of our pattern variable
-                if pattern_vars.contains(&subst.0) {
-                    // Sanity check: Only one unification per variable
-                    assert!(subs.insert(subst.0, subst.1).is_none());
-                } else {
-                    any_bad = true;
+        for expr in exprs_to_try.iter() {
+            // Unify3D
+            let ret = crate::expr::unify(vec![Constraint::Equal(pattern.clone(), expr.clone())].into_iter().collect());
+            if let Some(ret) = ret {
+                // Collect all unification results and make sure we actually match exactly
+                let mut subs = HashMap::new();
+                let mut any_bad = false;
+                for subst in ret.0 {
+                    // We only want to unify our pattern variables. This prevents us from going backwards
+                    // and unifying a pattern variable in expr with some expression of our pattern variable
+                    if pattern_vars.contains(&subst.0) {
+                        // Sanity check: Only one unification per variable
+                        assert!(subs.insert(subst.0, subst.1).is_none());
+                    } else {
+                        any_bad = true;
+                    }
                 }
-            }
 
-            // Make sure we have a substitution for every variable in the pattern set (and only for them)
-            if !any_bad && subs.len() == pattern_vars.len() {
-                let subst_replace = subs.into_iter().fold(replace.clone(), |z, (x, y)| crate::expr::subst(z, &x, y));
-                return (subst_replace, true);
+                // Make sure we have a substitution for every variable in the pattern set (and only for them)
+                if !any_bad && subs.len() == pattern_vars.len() {
+                    let subst_replace = subs.into_iter().fold(replace.clone(), |z, (x, y)| crate::expr::subst(z, &x, y));
+                    return (subst_replace, true);
+                }
             }
         }
     }
