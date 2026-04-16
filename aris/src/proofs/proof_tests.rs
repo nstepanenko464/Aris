@@ -810,39 +810,32 @@ pub fn test_complement<P: Proof>() -> (P, Vec<PjRef<P>>, Vec<PjRef<P>>) {
     let r2 = prf.add_premise(p("~A & A"));
     let r3 = prf.add_premise(p("A | ~A"));
     let r4 = prf.add_premise(p("~A | A"));
-    let r5 = prf.add_premise(p("~(forall A A) | (forall B B)"));
-    let r6 = prf.add_premise(p("~(forall A A) & (forall B B)"));
     let r19 = prf.add_premise(p("(A -> A) & (B <-> B) & (C <-> ~C) & (~D <-> D)"));
     let r32 = prf.add_premise(p("A & ~A & P"));
 
-    let r7 = prf.add_step(Justification(p("_|_"), RuleM::Complement, vec![i(r1.clone())], vec![]));
-    let r8 = prf.add_step(Justification(p("^|^"), RuleM::Complement, vec![i(r1)], vec![]));
-    let r9 = prf.add_step(Justification(p("_|_"), RuleM::Complement, vec![i(r2.clone())], vec![]));
-    let r10 = prf.add_step(Justification(p("^|^"), RuleM::Complement, vec![i(r2)], vec![]));
-    let r11 = prf.add_step(Justification(p("_|_"), RuleM::Complement, vec![i(r3.clone())], vec![]));
+    let r7 = prf.add_step(Justification(p("_|_"), RuleM::Complement, vec![i(r1)], vec![]));
+    let r9 = prf.add_step(Justification(p("_|_"), RuleM::Complement, vec![i(r2)], vec![]));
     let r12 = prf.add_step(Justification(p("^|^"), RuleM::Complement, vec![i(r3)], vec![]));
-    let r13 = prf.add_step(Justification(p("_|_"), RuleM::Complement, vec![i(r4.clone())], vec![]));
     let r14 = prf.add_step(Justification(p("^|^"), RuleM::Complement, vec![i(r4)], vec![]));
-    let r15 = prf.add_step(Justification(p("_|_"), RuleM::Complement, vec![i(r5.clone())], vec![]));
-    let r16 = prf.add_step(Justification(p("^|^"), RuleM::Complement, vec![i(r5)], vec![]));
-    let r17 = prf.add_step(Justification(p("_|_"), RuleM::Complement, vec![i(r6.clone())], vec![]));
-    let r18 = prf.add_step(Justification(p("^|^"), RuleM::Complement, vec![i(r6)], vec![]));
+
     let r20 = prf.add_step(Justification(p("^|^ & ^|^ & _|_ & _|_"), RuleM::ConditionalComplement, vec![i(r19.clone())], vec![]));
     let r21 = prf.add_step(Justification(p("^|^ & (B <-> B) & (C <-> ~C) & (~D <-> D)"), RuleM::ConditionalComplement, vec![i(r19.clone())], vec![]));
     let r22 = prf.add_step(Justification(p("(A -> A) & ^|^ & (C <-> ~C) & (~D <-> D)"), RuleM::ConditionalComplement, vec![i(r19.clone())], vec![]));
     let r23 = prf.add_step(Justification(p("(A -> A) & (B <-> B) & _|_ & (~D <-> D)"), RuleM::ConditionalComplement, vec![i(r19.clone())], vec![]));
     let r24 = prf.add_step(Justification(p("(A -> A) & (B <-> B) & (C <-> ~C) & _|_"), RuleM::ConditionalComplement, vec![i(r19.clone())], vec![]));
     let r25 = prf.add_step(Justification(p("_|_ & _|_ & ^|^ & ^|^"), RuleM::ConditionalComplement, vec![i(r19.clone())], vec![]));
+
     let r26 = prf.add_step(Justification(p("^|^ & ^|^ & _|_ & _|_"), RuleM::BiconditionalComplement, vec![i(r19.clone())], vec![]));
     let r27 = prf.add_step(Justification(p("^|^ & (B <-> B) & (C <-> ~C) & (~D <-> D)"), RuleM::BiconditionalComplement, vec![i(r19.clone())], vec![]));
     let r28 = prf.add_step(Justification(p("(A -> A) & ^|^ & (C <-> ~C) & (~D <-> D)"), RuleM::BiconditionalComplement, vec![i(r19.clone())], vec![]));
     let r29 = prf.add_step(Justification(p("(A -> A) & (B <-> B) & _|_ & (~D <-> D)"), RuleM::BiconditionalComplement, vec![i(r19.clone())], vec![]));
     let r30 = prf.add_step(Justification(p("(A -> A) & (B <-> B) & (C <-> ~C) & _|_"), RuleM::BiconditionalComplement, vec![i(r19.clone())], vec![]));
     let r31 = prf.add_step(Justification(p("_|_ & _|_ & ^|^ & ^|^"), RuleM::BiconditionalComplement, vec![i(r19)], vec![]));
+
     let r33 = prf.add_step(Justification(p("_|_ & P"), RuleM::Complement, vec![i(r32.clone())], vec![]));
     let r34 = prf.add_step(Justification(p("_|_ & P & X & F"), RuleM::Complement, vec![i(r32)], vec![]));
 
-    (prf, vec![i(r7), i(r9), i(r12), i(r14), i(r16), i(r17), i(r21), i(r28), i(r29), i(r30), i(r33)], vec![i(r8), i(r10), i(r11), i(r13), i(r15), i(r18), i(r20), i(r22), i(r23), i(r24), i(r25), i(r26), i(r27), i(r31), i(r34)])
+    (prf, vec![i(r7), i(r9), i(r12), i(r14), i(r21), i(r28), i(r29), i(r30), i(r33)], vec![i(r20), i(r22), i(r23), i(r24), i(r25), i(r26), i(r27), i(r31), i(r34)])
 }
 
 pub fn test_identity<P: Proof>() -> (P, Vec<PjRef<P>>, Vec<PjRef<P>>) {

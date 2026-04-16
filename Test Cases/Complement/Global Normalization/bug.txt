@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>h02ujbLSq9UsFx/6Rl8zy6BgwKbLy15ke9x8eMkPxNw=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>(P ∨ Q ∨ R ∨ P)</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>(R ∨ Q ∨ P)</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>0</premise>
+    </step>
+  </proof>
+</bram>

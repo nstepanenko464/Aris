@@ -1778,7 +1778,7 @@ fn check_by_rewrite_rule_one_step<P: Proof>(p: &P, deps: Vec<PjRef<P>>, conclusi
     }
 
     let premise_matches = rule.reductions.iter().any(|(find, replace)| {
-        let mut reduced = crate::rewrite_rules::reduce_pattern(premise.clone(), &[(find.clone(), replace.clone())]);
+        let mut reduced = crate::rewrite_rules::reduce_pattern_once(premise.clone(), &[(find.clone(), replace.clone())]);
         if commutative {
             reduced = reduced.sort_commutative_ops(restriction);
         }
@@ -1786,7 +1786,7 @@ fn check_by_rewrite_rule_one_step<P: Proof>(p: &P, deps: Vec<PjRef<P>>, conclusi
     });
 
     let conclusion_matches = rule.reductions.iter().any(|(find, replace)| {
-        let mut reduced = crate::rewrite_rules::reduce_pattern(conclusion_mut.clone(), &[(find.clone(), replace.clone())]);
+        let mut reduced = crate::rewrite_rules::reduce_pattern_once(conclusion_mut.clone(), &[(find.clone(), replace.clone())]);
         if commutative {
             reduced = reduced.sort_commutative_ops(restriction);
         }
@@ -1841,7 +1841,7 @@ impl RuleT for BooleanEquivalence {
             // because we can't expect people to know the specific order of outputs that our definition
             // of the rules uses
             Distribution => check_by_rewrite_rule_one_step(p, deps, conclusion, true, &equivs::DISTRIBUTION, "none"),
-            Complement => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_complement(), "none"),
+            Complement => check_by_rewrite_rule_one_step(p, deps, conclusion, false, &equivs::COMPLEMENT, "none"),
             Identity => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::IDENTITY, "none"),
             Annihilation => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::ANNIHILATION, "none"),
             Inverse => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::INVERSE, "none"),

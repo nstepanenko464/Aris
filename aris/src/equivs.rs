@@ -243,6 +243,15 @@ define_rewrite_rule! {
         ("^|^ -> phi", "phi"),
     ]
 }
+define_rewrite_rule! {
+    COMPLEMENT,
+    &[
+        ("phi & ~phi", "_|_"),
+        ("~phi & phi", "_|_"),
+        ("phi | ~phi", "^|^"),
+        ("~phi | phi", "^|^"),
+    ]
+}
 
 #[cfg(test)]
 mod tests {

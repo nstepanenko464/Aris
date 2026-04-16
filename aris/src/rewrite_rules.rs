@@ -126,6 +126,11 @@ pub fn reduce_pattern(e: Expr, patterns: &[(Expr, Expr)]) -> Expr {
     let patterns = freevarsify_pattern(&e, patterns);
     e.transform(&|expr| reduce_transform_func(expr, &patterns))
 }
+pub fn reduce_pattern_once(e: Expr, patterns: &[(Expr, Expr)]) -> Expr {
+    let patterns = freevarsify_pattern(&e, patterns);
+    let (result, _) = reduce_transform_func(e, &patterns);
+    result
+}
 
 // /// Like `reduce_pattern()`, but creates a set of possible reductions. This set
 // /// will contain all levels of reduction (up to full normalization), and on all
