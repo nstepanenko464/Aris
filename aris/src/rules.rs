@@ -1845,7 +1845,7 @@ impl RuleT for BooleanEquivalence {
             Identity => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::IDENTITY, "none"),
             Annihilation => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::ANNIHILATION, "none"),
             Inverse => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::INVERSE, "none"),
-            Absorption => check_by_rewrite_rule_one_step(p, deps, conclusion, true, &equivs::ABSORPTION, "none"),
+            Absorption => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_absorption(), "none"),
             Reduction => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_reduction(), "none"),
             Adjacency => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_adjacency(), "none"),
         }

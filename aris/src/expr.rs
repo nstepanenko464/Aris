@@ -931,22 +931,30 @@ impl Expr {
     fn collect_unique_exprs_absorption(expr: &Expr, op: Op, unique_exprs: &mut BTreeSet<Expr>) {
         match expr {
             Expr::Assoc { op: expr_op, exprs } if *expr_op == op => {
-                // Recursively handle nested associative expressions
                 for sub_expr in exprs {
                     Self::collect_unique_exprs_absorption(sub_expr, op, unique_exprs);
                 }
             }
+
+            // Candidate absorbable compound: A&(A|B) shape relative to outer op
             Expr::Assoc { op: inner_op, exprs } if (op == Op::Or && *inner_op == Op::And) || (op == Op::And && *inner_op == Op::Or) => {
+                // If any inner term is already present, the compound is absorbed.
                 if exprs.iter().any(|e| unique_exprs.contains(e)) {
-                    if let Some(e) = exprs.iter().find(|e| unique_exprs.contains(e)) {
-                        unique_exprs.insert(e.clone());
-                    }
-                } else {
-                    unique_exprs.insert(expr.clone());
+                    return;
                 }
-            }
-            _ => {
+
                 unique_exprs.insert(expr.clone());
+            }
+
+            // Simple term: insert it, then remove any compounds it absorbs
+            _ => {
+                let simple = expr.clone();
+                unique_exprs.insert(simple.clone());
+
+                unique_exprs.retain(|existing| match existing {
+                    Expr::Assoc { op: inner_op, exprs } if (op == Op::Or && *inner_op == Op::And) || (op == Op::And && *inner_op == Op::Or) => !exprs.iter().any(|e| e == &simple),
+                    _ => true,
+                });
             }
         }
     }
@@ -958,20 +966,28 @@ impl Expr {
         if let Expr::Assoc { op, exprs } = self {
             let mut unique_exprs = BTreeSet::new();
             for expr in exprs {
-                let normalized_expr = expr.normalize_absorption();
+                let normalized_expr = expr.normalize_absorption().sort_commutative_ops("bool");
                 Self::collect_unique_exprs_absorption(&normalized_expr, op, &mut unique_exprs);
             }
-            let unique_exprs: Vec<Expr> = unique_exprs.into_iter().collect();
+            let unique_exprs: Vec<Expr> = unique_exprs
+                .into_iter()
+                .map(|e| match e {
+                    Expr::Assoc { op: inner_op, mut exprs } => {
+                        exprs.sort(); // ← THIS is the key
+                        Expr::Assoc { op: inner_op, exprs }
+                    }
+                    _ => e,
+                })
+                .collect();
             if unique_exprs.len() == 1 {
                 unique_exprs.into_iter().next().unwrap()
             } else {
-                Expr::Assoc { op, exprs: unique_exprs }
+                Expr::Assoc { op, exprs: unique_exprs }.sort_commutative_ops("bool")
             }
         } else {
             self
         }
     }
-
     /// Helper function for collecting expressions to reduce over logical reduction rules
     /// Applies rules like 'A & ~A' -> '⊥' or 'A | ~A' -> '⊤'.
     fn collect_reduction_exprs(expr: &Expr, op: Op, reduced_exprs: &mut BTreeSet<Expr>) {
@@ -2164,6 +2180,15 @@ mod tests {
         #[test]
         fn test_normalize_complement_nested_and() {
             assert_eq!(p("A & B & ~A").normalize_complement(), p("B & _|_"));
+        }
+        #[test]
+        fn test_normalize_absorption_three_term_or_inner() {
+            assert_eq!(p("(A & B) | (B & (B | ~C)) | (~B & C)").normalize_absorption(), p("B | (C & ~B)"));
+        }
+
+        #[test]
+        fn test_normalize_absorption_three_term_or_late_simple_term() {
+            assert_eq!(p("(A & B) | B | (~B & C)").normalize_absorption(), p("B | (C & ~B)"));
         }
     }
 }
