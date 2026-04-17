@@ -2146,4 +2146,24 @@ mod tests {
             }
         }
     }
+
+    #[cfg(test)]
+    mod tests {
+        use crate::parser::parse_unwrap as p;
+
+        #[test]
+        fn test_normalize_complement_nested_or() {
+            assert_eq!(p("A | B | ~A").normalize_complement(), p("B | ^|^"));
+        }
+
+        #[test]
+        fn test_normalize_complement_nested_or_reversed() {
+            assert_eq!(p("~A | B | A").normalize_complement(), p("B | ^|^"));
+        }
+
+        #[test]
+        fn test_normalize_complement_nested_and() {
+            assert_eq!(p("A & B & ~A").normalize_complement(), p("B & _|_"));
+        }
+    }
 }

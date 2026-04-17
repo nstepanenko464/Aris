@@ -1841,7 +1841,7 @@ impl RuleT for BooleanEquivalence {
             // because we can't expect people to know the specific order of outputs that our definition
             // of the rules uses
             Distribution => check_by_rewrite_rule_one_step(p, deps, conclusion, true, &equivs::DISTRIBUTION, "none"),
-            Complement => check_by_rewrite_rule_one_step(p, deps, conclusion, false, &equivs::COMPLEMENT, "none"),
+            Complement => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_complement(), "none"),
             Identity => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::IDENTITY, "none"),
             Annihilation => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::ANNIHILATION, "none"),
             Inverse => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::INVERSE, "none"),
