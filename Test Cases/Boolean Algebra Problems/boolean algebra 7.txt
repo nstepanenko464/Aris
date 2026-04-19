@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+  </metadata>
+
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>((¬Q ∧ ((¬R ∧ S) ∨ (R ∧ S))) ∨ (Q ∧ R ∧ S))</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>((¬Q ∧ ((¬R ∨ R) ∧ S)) ∨ (Q ∧ R ∧ S))</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>0</premise>
+    </step>
+    <step linenum="2">
+      <raw>((¬Q ∧ (⊤ ∧ S)) ∨ (Q ∧ R ∧ S))</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>1</premise>
+    </step>
+    <step linenum="3">
+      <raw>((¬Q ∧ S) ∨ (Q ∧ R ∧ S))</raw>
+      <rule>IDENTITY</rule>
+      <premise>2</premise>
+    </step>
+    <step linenum="4">
+      <raw>((¬Q ∨ (Q ∧ R)) ∧ S)</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>3</premise>
+    </step>
+    <step linenum="5">
+      <raw>(((¬Q ∨ Q) ∧ (¬Q ∨ R)) ∧ S)</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>4</premise>
+    </step>
+    <step linenum="6">
+      <raw>((⊤ ∧ (¬Q ∨ R)) ∧ S)</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>5</premise>
+    </step>
+    <step linenum="7">
+      <raw>((¬Q ∨ R) ∧ S)</raw>
+      <rule>IDENTITY</rule>
+      <premise>6</premise>
+    </step>
+  </proof>
+</bram>
