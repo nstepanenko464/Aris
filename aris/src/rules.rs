@@ -1842,8 +1842,8 @@ impl RuleT for BooleanEquivalence {
             // of the rules uses
             Distribution => check_by_rewrite_rule_one_step(p, deps, conclusion, true, &equivs::DISTRIBUTION, "none"),
             Complement => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_complement(), "none"),
-            Identity => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::IDENTITY, "none"),
-            Annihilation => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::ANNIHILATION, "none"),
+            Identity => check_by_normalize_first_expr(p, deps, conclusion, false, |e| equivs::IDENTITY.reduce(e.normalize_assoc_to_binary_left()).sort_commutative_ops("bool"), "none"),
+            Annihilation => check_by_normalize_first_expr(p, deps, conclusion, false, |e| equivs::ANNIHILATION.reduce(e.normalize_assoc_to_binary_left()).sort_commutative_ops("bool"), "none"),
             Inverse => check_by_rewrite_rule_confl(p, deps, conclusion, false, &equivs::INVERSE, "none"),
             Absorption => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_absorption(), "none"),
             Reduction => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_reduction(), "none"),
