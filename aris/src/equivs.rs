@@ -99,6 +99,9 @@ define_rewrite_rule! {
     &[
         ("phi -> psi", "~phi | psi"),
         ("~(phi -> psi)", "phi & ~psi"),
+        ("~(phi -> psi)", "~(~phi | psi)"),
+        ("~(~phi | psi)", "phi & ~psi"),
+
     ]
 }
 // equivalence
