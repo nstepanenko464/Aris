@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>+wPMnxyCbCVFZPgx1mp+WgbDYx1Aje05aJx6pH8i8YY=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>((¬A ∧ (A ∨ B)) ∨ ((B ∨ (A ∧ A)) ∧ (A ∨ ¬B)))</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>((¬A ∧ (A ∨ B)) ∨ ((B ∨ A) ∧ (A ∨ ¬B)))</raw>
+      <rule>IDEMPOTENCE</rule>
+      <premise>0</premise>
+    </step>
+    <step linenum="2">
+      <raw>((¬A ∧ (A ∨ B)) ∨ (A ∨ (B ∧ ¬B)))</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>1</premise>
+    </step>
+    <step linenum="3">
+      <raw>((¬A ∧ (A ∨ B)) ∨ (A ∨ ⊥))</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>2</premise>
+    </step>
+    <step linenum="4">
+      <raw>((¬A ∧ (A ∨ B)) ∨ A)</raw>
+      <rule>IDENTITY</rule>
+      <premise>3</premise>
+    </step>
+    <step linenum="5">
+      <raw>(((¬A ∧ A) ∨ (¬A ∧ B)) ∨ A)</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>4</premise>
+    </step>
+    <step linenum="6">
+      <raw>((⊥ ∨ (¬A ∧ B)) ∨ A)</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>5</premise>
+    </step>
+    <step linenum="7">
+      <raw>((¬A ∧ B) ∨ A)</raw>
+      <rule>IDENTITY</rule>
+      <premise>6</premise>
+    </step>
+    <step linenum="8">
+      <raw>((A ∨ ¬A) ∧ (A ∨ B))</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>7</premise>
+    </step>
+    <step linenum="9">
+      <raw>(⊤ ∧ (A ∨ B))</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>8</premise>
+    </step>
+    <step linenum="10">
+      <raw>(A ∨ B)</raw>
+      <rule>IDENTITY</rule>
+      <premise>9</premise>
+    </step>
+  </proof>
+</bram>

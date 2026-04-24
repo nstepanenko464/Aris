@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>2tLnlTSY4FWarxJMTvbj+zEbdT0sa8ox3qw0MrMR9W4=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>((¬A ∧ B ∧ ¬C) ∨ (¬A ∧ B ∧ C) ∨ (A ∧ B ∧ C))</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>((¬A ∧ B ∧ (¬C ∨ C)) ∨ (A ∧ B ∧ C))</raw>
+      <rule>DISTRIBUTION</rule>
+    </step>
+    <step linenum="2">
+      <raw>((¬A ∧ B ∧ ⊤) ∨ (A ∧ B ∧ C))</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>1</premise>
+    </step>
+    <step linenum="3">
+      <raw>((¬A ∧ B) ∨ (A ∧ B ∧ C))</raw>
+      <rule>IDENTITY</rule>
+      <premise>2</premise>
+    </step>
+    <step linenum="4">
+      <raw>((¬A ∧ B) ∨ (A ∧ C ∧ B))</raw>
+      <rule>COMMUTATION</rule>
+      <premise>3</premise>
+    </step>
+    <step linenum="5">
+      <raw>((¬A ∧ B) ∨ ((A ∧ C) ∧ B))</raw>
+      <rule>ASSOCIATION</rule>
+      <premise>4</premise>
+    </step>
+    <step linenum="6">
+      <raw>((¬A ∨ (A ∧ C)) ∧ B)</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>5</premise>
+    </step>
+    <step linenum="7">
+      <raw>(((¬A ∨ A) ∧ (¬A ∨ C)) ∧ B)</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>6</premise>
+    </step>
+    <step linenum="8">
+      <raw>((⊤ ∧ (¬A ∨ C)) ∧ B)</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>7</premise>
+    </step>
+    <step linenum="9">
+      <raw>((¬A ∨ C) ∧ B)</raw>
+      <rule>IDENTITY</rule>
+      <premise>8</premise>
+    </step>
+  </proof>
+</bram>

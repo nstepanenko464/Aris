@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>L/85b1bj9mqi6x167FT41rRooQz5dxLxYY78dyF0r9k=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>(((A ∨ C) ∧ ((A ∧ D) ∨ (A ∧ ¬D))) ∨ (A ∧ C) ∨ C)</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>(((A ∨ C) ∧ ((A ∧ D) ∨ (A ∧ ¬D))) ∨ C)</raw>
+      <rule>ABSORPTION</rule>
+      <premise>0</premise>
+    </step>
+    <step linenum="2">
+      <raw>(((A ∨ C) ∧ (A ∧ (D ∨ ¬D))) ∨ C)</raw>
+      <rule>DISTRIBUTION</rule>
+      <premise>1</premise>
+    </step>
+    <step linenum="3">
+      <raw>(((A ∨ C) ∧ (A ∧ ⊤)) ∨ C)</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>2</premise>
+    </step>
+    <step linenum="4">
+      <raw>(((A ∨ C) ∧ A) ∨ C)</raw>
+      <rule>IDENTITY</rule>
+      <premise>3</premise>
+    </step>
+    <step linenum="5">
+      <raw>(A ∨ C)</raw>
+      <rule>ABSORPTION</rule>
+      <premise>4</premise>
+    </step>
+  </proof>
+</bram>

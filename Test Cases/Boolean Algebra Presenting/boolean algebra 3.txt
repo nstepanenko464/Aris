@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bram>
+  <program>Aris</program>
+  <version>0.1.0</version>
+  <metadata>
+    <author>ARIS-YEW-UI</author>
+    <hash>GxB6a4BEMCnlCf7T1jgm9Z6/Y5Z6Xab52/JPWXuPiuU=</hash>
+  </metadata>
+  <proof id="0">
+    <assumption linenum="0">
+      <raw>(¬(A ∧ B) ∧ (¬A ∨ B) ∧ (¬B ∨ B))</raw>
+    </assumption>
+    <step linenum="1">
+      <raw>((¬A ∨ ¬B) ∧ (¬A ∨ B) ∧ (¬B ∨ B))</raw>
+      <rule>DE_MORGAN</rule>
+      <premise>0</premise>
+    </step>
+    <step linenum="2">
+      <raw>((¬A ∨ ¬B) ∧ (¬A ∨ B) ∧ ⊤)</raw>
+      <rule>COMPLEMENT</rule>
+      <premise>1</premise>
+    </step>
+    <step linenum="3">
+      <raw>(¬A ∧ ⊤)</raw>
+      <rule>ADJACENCY</rule>
+      <premise>2</premise>
+    </step>
+  </proof>
+</bram>
