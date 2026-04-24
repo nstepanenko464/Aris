@@ -1800,6 +1800,56 @@ fn check_by_rewrite_rule_one_step<P: Proof>(p: &P, deps: Vec<PjRef<P>>, conclusi
     }
 }
 
+fn check_by_rewrite_rule_one_step_anywhere<P: Proof>(
+    p: &P,
+    deps: Vec<PjRef<P>>,
+    conclusion: Expr,
+    commutative: bool,
+    rule: &RewriteRule,
+    restriction: &str,
+) -> Result<(), ProofCheckError<PjRef<P>, P::SubproofReference>> {
+    let mut premise = p.lookup_expr_or_die(&deps[0])?;
+    let mut conclusion_mut = conclusion;
+
+    premise = premise.normalize_assoc_to_binary();
+    conclusion_mut = conclusion_mut.normalize_assoc_to_binary();
+
+    if commutative {
+        premise = premise.sort_commutative_ops(restriction);
+        conclusion_mut = conclusion_mut.sort_commutative_ops(restriction);
+    }
+
+    let premise_matches = rule.reductions.iter().any(|(find, replace)| {
+        let mut reduced = crate::rewrite_rules::reduce_pattern(
+            premise.clone(),
+            &[(find.clone(), replace.clone())],
+        );
+        if commutative {
+            reduced = reduced.sort_commutative_ops(restriction);
+        }
+        reduced != premise && reduced == conclusion_mut
+    });
+
+    let conclusion_matches = rule.reductions.iter().any(|(find, replace)| {
+        let mut reduced = crate::rewrite_rules::reduce_pattern(
+            conclusion_mut.clone(),
+            &[(find.clone(), replace.clone())],
+        );
+        if commutative {
+            reduced = reduced.sort_commutative_ops(restriction);
+        }
+        reduced != conclusion_mut && reduced == premise
+    });
+
+    if premise_matches || conclusion_matches {
+        Ok(())
+    } else {
+        Err(ProofCheckError::Other(
+            "Expressions do not match by a distribution step.".to_string(),
+        ))
+    }
+}
+
 impl RuleT for BooleanEquivalence {
     fn get_name(&self) -> String {
         use BooleanEquivalence::*;
@@ -1840,7 +1890,7 @@ impl RuleT for BooleanEquivalence {
             // Distribution and Reduction have outputs containing binops that need commutative sorting
             // because we can't expect people to know the specific order of outputs that our definition
             // of the rules uses
-            Distribution => check_by_rewrite_rule_one_step(p, deps, conclusion, true, &equivs::DISTRIBUTION, "none"),
+            Distribution => check_by_rewrite_rule_one_step_anywhere(p, deps, conclusion, true, &equivs::DISTRIBUTION, "none"),
             Complement => check_by_normalize_first_expr(p, deps, conclusion, true, |e| e.normalize_complement(), "none"),
             Identity => check_by_normalize_first_expr(p, deps, conclusion, false, |e| equivs::IDENTITY.reduce(e.normalize_assoc_to_binary_left()).sort_commutative_ops("bool"), "none"),
             Annihilation => check_by_normalize_first_expr(p, deps, conclusion, false, |e| equivs::ANNIHILATION.reduce(e.normalize_assoc_to_binary_left()).sort_commutative_ops("bool"), "none"),

@@ -791,6 +791,7 @@ pub fn test_distribution<P: Proof>() -> (P, Vec<PjRef<P>>, Vec<PjRef<P>>) {
 
     let p1 = prf.add_premise(p("A & (B | C)"));
     let p2 = prf.add_premise(p("(B & A) | (C & A)"));
+    let p3 = prf.add_premise(p("((~A & B & ~C) | (~A & B & C)) | (A & B & C)"));
 
     let r1 = prf.add_step(Justification(p("(A & B) | (A & C)"), RuleM::Distribution, vec![i(p1)], vec![]));
     let r2 = prf.add_step(Justification(p("A & (B | C)"), RuleM::Distribution, vec![i(p2.clone())], vec![]));
@@ -798,7 +799,14 @@ pub fn test_distribution<P: Proof>() -> (P, Vec<PjRef<P>>, Vec<PjRef<P>>) {
 
     let r4 = prf.add_step(Justification(p("A | (B & C)"), RuleM::Distribution, vec![i(p2)], vec![]));
 
-    (prf, vec![i(r1), i(r2), i(r3)], vec![i(r4)])
+    let r5 = prf.add_step(Justification(
+        p("(~A & ((B & ~C) | (B & C))) | (A & B & C)"),
+        RuleM::Distribution,
+        vec![i(p3)],
+        vec![],
+    ));
+
+    (prf, vec![i(r1), i(r2), i(r3), i(r5)], vec![i(r4)])
 }
 
 pub fn test_complement<P: Proof>() -> (P, Vec<PjRef<P>>, Vec<PjRef<P>>) {
